@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "454245338277",
+    "firebase_url": "https://typelog-4e9d3-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "typelog-4e9d3",
+    "storage_bucket": "typelog-4e9d3.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:454245338277:android:9e9484d4b92f5629ff914c",
+        "android_client_info": {
+          "package_name": "com.github.zermelo101.screenrecorderapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "454245338277-3r84goqgmsjh3gilj9355pt8ji93e12a.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDCgnvx6kNS39gLzsOenrFoh-1b2VE8J3Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "454245338277-3r84goqgmsjh3gilj9355pt8ji93e12a.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
