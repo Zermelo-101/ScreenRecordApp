@@ -1,6 +1,8 @@
 package com.github.zermelo101.screenrecorderapp
 
 import android.os.Bundle
+import android.util.DisplayMetrics
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Box
@@ -11,13 +13,30 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInteropFilter
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.dp
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 import java.io.IOException
 import java.io.PrintWriter
 import java.net.ServerSocket
 import java.net.Socket
+import java.util.concurrent.CompletableFuture
 
 
 class RecordedFile : ComponentActivity() {
+    data class Pos(val x : Float, val y : Float, val time : Long)
+    var startTime :Long = 0;
+    private val list : MutableList<Pos> = mutableListOf()
+    private val db: DatabaseReference = Firebase.database.reference
+    var size : CompletableFuture<Int> = CompletableFuture()
+    private  var maxX :Int =0
+    private  var maxY :Int =0
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,15 +54,42 @@ class RecordedFile : ComponentActivity() {
 
             }
         }).start()
+        db.child("LogContinous").get().addOnSuccessListener {
+            size.complete((it.value as List<*>).size)
+
+        }
 
         setContent{
+            SetUpScreenSize()
+            startTime = System.nanoTime()
         throwMatrixActivty()
         }
 
     }
+
+    override fun onPause() {
+        super.onPause()
+        Log.d("SCREEN SIZE",maxX.toString() +" "+ maxY.toString())
+        Log.d("RECORDING",list.toString())
+        Log.d("SIZE","size is  ${list.size}")
+
+    }
+
+    @Composable
+    fun SetUpScreenSize(){
+        val config = LocalConfiguration.current
+        val density = LocalDensity.current
+        maxX = with(density) {config.screenWidthDp.dp.roundToPx()}
+        maxY = with(density) {config.screenHeightDp.dp.roundToPx()}
+
+        // Log.d("SCREEN SIZE",maxX.toString() +" "+ maxY.toString())
+    }
     @OptIn(ExperimentalComposeUiApi::class)
     @Composable
     fun throwMatrixActivty() {
+
+
+
 
         var touchX by remember { mutableStateOf(0f) }
         var touchY by remember { mutableStateOf(0f) }
@@ -57,6 +103,7 @@ class RecordedFile : ComponentActivity() {
                 modifier = Modifier
                     .fillMaxSize()
                     .pointerInteropFilter {
+                        list.add(Pos(it.x,it.y, System.nanoTime() - startTime))
                         touchX = it.x
                         touchY = it.y
                         true
