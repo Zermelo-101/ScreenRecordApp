@@ -11,12 +11,31 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInteropFilter
+import java.io.IOException
+import java.io.PrintWriter
+import java.net.ServerSocket
+import java.net.Socket
 
 
 class RecordedFile : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Thread(Runnable {
+
+            try{
+                val ss : Socket = Socket("172.20.10.3",8080)
+                val printWritter : PrintWriter = PrintWriter(ss.getOutputStream())
+
+                printWritter.println("Start code")
+                printWritter.close()
+                ss.close()
+            }
+            catch (e : IOException){
+
+            }
+        }).start()
+
         setContent{
         throwMatrixActivty()
         }
