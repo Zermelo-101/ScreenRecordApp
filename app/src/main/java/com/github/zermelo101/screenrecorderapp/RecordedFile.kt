@@ -1,5 +1,6 @@
 package com.github.zermelo101.screenrecorderapp
 
+import android.os.Build
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.util.Log
@@ -24,11 +25,14 @@ import java.io.IOException
 import java.io.PrintWriter
 import java.net.ServerSocket
 import java.net.Socket
+import java.util.Calendar
 import java.util.concurrent.CompletableFuture
 
 
 class RecordedFile : ComponentActivity() {
     data class Pos(val x : Float, val y : Float, val time : Long)
+
+    data class Recording(val PhoneModel:String, val duration: Long ,val screenW: Int,val screenH : Int,val listPos : MutableList<Pos>)
     var startTime :Long = 0;
     private val list : MutableList<Pos> = mutableListOf()
     private val db: DatabaseReference = Firebase.database.reference
@@ -54,10 +58,7 @@ class RecordedFile : ComponentActivity() {
 
             }
         }).start()
-        db.child("LogContinous").get().addOnSuccessListener {
-            size.complete((it.value as List<*>).size)
 
-        }
 
         setContent{
             SetUpScreenSize()
@@ -69,9 +70,32 @@ class RecordedFile : ComponentActivity() {
 
     override fun onPause() {
         super.onPause()
+        val recording = Recording(Build.MANUFACTURER + " : " + Build.MODEL, System.nanoTime() - startTime, screenW = maxX, screenH = maxY,list)
+        db.child("LogContinuous").child(Calendar.getInstance().time.toString()).setValue(recording)
+
+
+        Thread(Runnable {
+
+            try{
+                val ss : Socket = Socket("172.20.10.3",8080)
+                val printWritter : PrintWriter = PrintWriter(ss.getOutputStream())
+
+                printWritter.println("End code")
+                printWritter.close()
+                ss.close()
+            }
+            catch (e : IOException){
+
+            }
+        }).start()
+
+
+        /*
         Log.d("SCREEN SIZE",maxX.toString() +" "+ maxY.toString())
         Log.d("RECORDING",list.toString())
         Log.d("SIZE","size is  ${list.size}")
+
+         */
 
     }
 

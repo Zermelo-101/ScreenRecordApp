@@ -73,7 +73,7 @@ class MainActivity : ComponentActivity() {
         )
 
         {
-            Text(text = "Matrix")
+            Text(text = "Continuous")
         }
     }
 
