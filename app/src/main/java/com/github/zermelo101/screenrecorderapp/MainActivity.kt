@@ -19,8 +19,10 @@ import androidx.compose.ui.unit.dp
 
 
 class MainActivity : ComponentActivity() {
+    var  ip = ""
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        var x by mutableStateOf("Select Ip")
         setContent {
 
             Column(
@@ -29,6 +31,7 @@ class MainActivity : ComponentActivity() {
                 verticalArrangement = Arrangement.Center
             ) {
                 Text(text = "Please select Recording technique")
+                TextField(value = x, onValueChange = {ip=it; x =it})
                 Spacer(modifier = Modifier.width(50.dp))
                 CreateRecordingtechRow()
             }
@@ -84,6 +87,7 @@ class MainActivity : ComponentActivity() {
 
     private fun throwMatrixActivty(){
         val intent = Intent(this, RecordedFile::class.java)
+        intent.putExtra("Ip",ip)
         startActivity(intent)
     }
 

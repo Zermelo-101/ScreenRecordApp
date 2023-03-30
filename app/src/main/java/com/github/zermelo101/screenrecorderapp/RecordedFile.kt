@@ -37,6 +37,7 @@ class RecordedFile : ComponentActivity() {
     private val list : MutableList<Pos> = mutableListOf()
     private val db: DatabaseReference = Firebase.database.reference
     var size : CompletableFuture<Int> = CompletableFuture()
+    private var Ip = ""
     private  var maxX :Int =0
     private  var maxY :Int =0
 
@@ -44,10 +45,12 @@ class RecordedFile : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Ip = intent.getStringExtra("Ip").toString()
+
         Thread(Runnable {
 
             try{
-                val ss : Socket = Socket("172.20.10.3",8080)
+                val ss : Socket = Socket(Ip,8080)
                 val printWritter : PrintWriter = PrintWriter(ss.getOutputStream())
 
                 printWritter.println("Start code")
@@ -77,7 +80,7 @@ class RecordedFile : ComponentActivity() {
         Thread(Runnable {
 
             try{
-                val ss : Socket = Socket("172.20.10.3",8080)
+                val ss : Socket = Socket(Ip,8080)
                 val printWritter : PrintWriter = PrintWriter(ss.getOutputStream())
 
                 printWritter.println("End code")
