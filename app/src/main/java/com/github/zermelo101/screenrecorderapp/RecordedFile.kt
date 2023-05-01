@@ -25,6 +25,7 @@ import java.io.IOException
 import java.io.PrintWriter
 import java.net.ServerSocket
 import java.net.Socket
+import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.concurrent.CompletableFuture
 
@@ -74,7 +75,9 @@ class RecordedFile : ComponentActivity() {
     override fun onPause() {
         super.onPause()
         val recording = Recording(Build.MANUFACTURER + " : " + Build.MODEL, System.nanoTime() - startTime, screenW = maxX, screenH = maxY,list)
-        db.child("LogContinuous").child(Calendar.getInstance().time.toString()).setValue(recording)
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+        val dateFormated = dateFormat.format(Calendar.getInstance().time)
+        db.child("LogContinuous").child(dateFormated).setValue(recording)
 
 
         Thread(Runnable {
